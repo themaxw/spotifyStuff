@@ -10,10 +10,15 @@ from sqlalchemy.orm import sessionmaker, relationship
 
 basePath = Path(__file__).parent
 
-logging.basicConfig(filename=basePath / "discoverWeekly.log", level=logging.INFO)
+logging.basicConfig(
+    filename=basePath / "discoverWeekly.log",
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)-5.5s]: %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
 
 dbPath = "sqlite:///{}".format(basePath / "discoverWeekly.db")
-engine = create_engine("sqlite:///discoverWeekly.db")
+engine = create_engine(dbPath)
 Session = sessionmaker(bind=engine)
 Base = declarative_base()
 
