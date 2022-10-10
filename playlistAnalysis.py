@@ -10,8 +10,10 @@ scope = " ".join(
     [
         "user-read-currently-playing",
         "user-read-playback-state",
+        "playlist-modify-private",
         "user-modify-playback-state",
         "user-library-read",
+        "playlist-modify-public",
         "app-remote-control",
     ]
 )
@@ -51,7 +53,9 @@ def getCurrentPlaybackInfo(user: spotipy.Spotify):
         )
 
 
-getCurrentPlaybackInfo(user)
+if __name__ == "__main__":
+
+    getCurrentPlaybackInfo(user)
 # song = spotify.audio_analysis(id)
 # pprint(song)
 # if __name__ == "__main__":

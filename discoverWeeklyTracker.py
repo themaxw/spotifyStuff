@@ -46,6 +46,8 @@ def authenticate():
             "user-read-playback-state",
             "user-modify-playback-state",
             "user-library-read",
+            "playlist-modify-private",
+            "playlist-modify-public",
             "app-remote-control",
         ]
     )
@@ -70,11 +72,15 @@ def authenticate():
 
 
 def getDiscoverWeekly(
-    user: spotipy.Spotify, discoverWeekly_id="37i9dQZEVXcEQGHXUmK96b"
+    user: spotipy.Spotify,
+    discoverWeekly_id="37i9dQZEVXcEQGHXUmK96b",
+    newDiscoverWeekly_id="10fTxvB9wxLtKuML78Z6CF",
 ):
     logging.info("getting playlist tracks...")
     tracks = user.playlist_tracks(discoverWeekly_id)
+
     songs = []
+    songs_new = []
     for track in tracks["items"]:
         song = track["track"]["name"]
         song_id = track["track"]["id"]
@@ -91,8 +97,41 @@ def getDiscoverWeekly(
                 session.add(Song(id=song_id, name=name, times_seen=1))
                 artist = " ".join(artists)
                 logging.info(f"new Song: {name} - {artist} ({song_id})")
+                songs_new.append(song_id)
         session.commit()
+    user.playlist_replace_items(newDiscoverWeekly_id, songs_new)
 
 
 user, sp = authenticate()
-getDiscoverWeekly(sp)
+
+newDiscoverWeekly_id = "10fTxvB9wxLtKuML78Z6CF"
+songs_new = [
+    "1HHVtk0s64vSd2JxV03ynL",
+    "7xK4mAIgIl7GRBGZKB9QXg",
+    "2E0EXqwsXELsjYSCWHy65K",
+    "3VZi5FjfKrL4S4NdMbce3J",
+    "1Yjvp84kzDJ8HD3tRJr0T5",
+    "0IXehCQY9Z9VwvCizoBauQ",
+    "3JvCIGIzV5zwbF1EyReMTt",
+    "2VlzXciW7QtomIOX3pmSMh",
+    "4OXIMXSvmAuHIL4UuLCglf",
+    "1hxxOv1emWViNUdqB5Uxe4",
+    "6AF2f2H7hOsjHrrz8PBpIG",
+    "4xyIOOcc0Yuv8mvcCn7biw",
+    "1wKy1UGBNH8B7lTfxX4wm0",
+    "5Jklf7IZm5sx7LvdYH84BA",
+    "5NS2A4JYWEINqBeUt3uMrm",
+    "4YQQL4MFAqFnkt4BMOIJxm",
+    "3ZQpms23dgtgox86dd7eGV",
+    "4ChDxebZnqV99jCzi7db9g",
+    "6h2TL4YWi12yc5QctcRwFk",
+    "5M9AvxuVkrY5j9OQkkn5kM",
+    "2oAm3NUdqpNEAER7jGvT9f",
+    "2h6jNrLsGagxnWnvBXWtyn",
+    "2ByYZXoDr2EytEmHXemogT",
+]
+
+user.playlist_replace_items(newDiscoverWeekly_id, songs_new)
+
+
+# getDiscoverWeekly(sp)
