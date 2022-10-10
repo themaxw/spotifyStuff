@@ -102,6 +102,22 @@ def getDiscoverWeekly(
     user.playlist_replace_items(newDiscoverWeekly_id, songs_new)
 
 
-user, sp = authenticate()
+def decreaseAllOfThisWeek(
+    user: spotipy.Spotify, discoverWeekly_id="37i9dQZEVXcEQGHXUmK96b"
+):
+    logging.info("getting playlist tracks...")
+    tracks = user.playlist_tracks(discoverWeekly_id)
+    logging.info("updating database...")
+    with Session() as session:
+        for track in tracks["items"]:
+            song_id = track["track"]["id"]
+            song = session.query(Song).get(song_id)
+            song.times_seen -= 1
+        session.commit()
 
-getDiscoverWeekly(sp)
+
+if __name__ == "__main__":
+
+    user, sp = authenticate()
+    decreaseAllOfThisWeek(user)
+    # getDiscoverWeekly(sp)
