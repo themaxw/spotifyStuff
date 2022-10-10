@@ -105,6 +105,12 @@ def getDiscoverWeekly(
 def decreaseAllOfThisWeek(
     user: spotipy.Spotify, discoverWeekly_id="37i9dQZEVXcEQGHXUmK96b"
 ):
+    """Use this after accidentally analysing a playlist twice a week
+
+    Args:
+        user (spotipy.Spotify): _description_
+        discoverWeekly_id (str, optional): _description_. Defaults to "37i9dQZEVXcEQGHXUmK96b".
+    """
     logging.info("getting playlist tracks...")
     tracks = user.playlist_tracks(discoverWeekly_id)
     logging.info("updating database...")
@@ -119,5 +125,4 @@ def decreaseAllOfThisWeek(
 if __name__ == "__main__":
 
     user, sp = authenticate()
-    decreaseAllOfThisWeek(user)
-    # getDiscoverWeekly(sp)
+    getDiscoverWeekly(sp)
