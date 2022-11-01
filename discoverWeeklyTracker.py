@@ -22,7 +22,7 @@ logging.basicConfig(
     ],
 )
 
-dbPath = "sqlite:///{}".format(basePath / "discoverWeekly_new.db")
+dbPath = "sqlite:///{}".format(basePath / "discoverWeekly.db")
 engine = create_engine(dbPath)
 Session = sessionmaker(bind=engine)
 Base = declarative_base()
