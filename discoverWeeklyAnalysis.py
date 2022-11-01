@@ -1,6 +1,8 @@
-from discoverWeeklyTracker import Song, Session
+from discoverWeeklyTracker import Song, DiscoverWeekly, Session, association_table
 from playlistAnalysis import sp
 from tqdm import tqdm
+
+import sqlalchemy as sa
 
 from typing import List
 
@@ -19,7 +21,16 @@ def getTracksInfo(tracks: List[Song]):
 
 
 with Session() as session:
-    items: List[Song] = session.query(Song).filter(Song.times_seen > 2).all()
+    # items: List[Song] = session.query(Song).filter(func.length(Song.mixes) > 1).all()
+
+    # query all songs with more than one mix
+    subq = (
+        session.query(sa.func.count(association_table.c.song_id))
+        .filter(association_table.c.song_id == Song.id)
+        .scalar_subquery()
+    )
+    items = session.query(Song).filter(subq > 1).order_by(subq).all()
+    # items = session.query(Song).filter(Song.artist == "Powermad").all()
     print(len(items))
     for i in items:
         print(i)
