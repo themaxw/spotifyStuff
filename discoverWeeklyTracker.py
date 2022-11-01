@@ -13,13 +13,16 @@ basePath = Path(__file__).parent
 cachePath = basePath / ".cache"
 
 logging.basicConfig(
-    filename=basePath / "discoverWeekly.log",
     level=logging.INFO,
     format="%(asctime)s [%(levelname)-5.5s]: %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
+    handlers=[
+        logging.FileHandler(basePath / "discoverWeekly.log"),
+        logging.StreamHandler(),
+    ],
 )
 
-dbPath = "sqlite:///{}".format(basePath / "discoverWeekly.db")
+dbPath = "sqlite:///{}".format(basePath / "discoverWeekly_new.db")
 engine = create_engine(dbPath)
 Session = sessionmaker(bind=engine)
 Base = declarative_base()
@@ -183,9 +186,9 @@ def fixAllOfThisWeek(user: spotipy.Spotify, discoverWeekly_id="37i9dQZEVXcEQGHXU
             song_id = track["track"]["id"]
             song = session.query(Song).get(song_id)
             if len(song.mixes) > 1:
-                # song.mixes[0] = mix
-                print([mix.date for mix in song.mixes])
-        # session.commit()
+                song.mixes[0] = mix
+                logging.info([mix.date for mix in song.mixes])
+        session.commit()
 
 
 if __name__ == "__main__":
