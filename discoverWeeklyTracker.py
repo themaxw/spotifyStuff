@@ -10,6 +10,7 @@ from sqlalchemy.orm import sessionmaker, relationship
 import datetime
 
 basePath = Path(__file__).parent
+cachePath = basePath / ".cache"
 
 logging.basicConfig(
     filename=basePath / "discoverWeekly.log",
@@ -18,7 +19,7 @@ logging.basicConfig(
     datefmt="%Y-%m-%d %H:%M:%S",
 )
 
-dbPath = "sqlite:///{}".format(basePath / "discoverWeekly_new.db")
+dbPath = "sqlite:///{}".format(basePath / "discoverWeekly.db")
 engine = create_engine(dbPath)
 Session = sessionmaker(bind=engine)
 Base = declarative_base()
@@ -82,6 +83,7 @@ def authenticate():
             client_secret=clientSecret,
             redirect_uri=redirectUrl,
             scope=scope,
+            cache_path=cachePath,
         )
     )
 
@@ -192,8 +194,4 @@ if __name__ == "__main__":
     # TODO fix everything, implement check to only check once
     track_discover_weekly(user)
     update_playlist(user)
-    with Session() as session:
-        mix = get_this_weeks_mix(session)
-        for song in mix.songs:
-            logging.info(f"{song.name} - {song.artist}")
     # fixAllOfThisWeek(user)
