@@ -56,6 +56,13 @@ class Song(Base):
         order_by=DiscoverWeekly.date,
     )
 
+    def as_dict(self):
+        return {
+            "name": self.name,
+            "artist": self.artist,
+            "mixes": [mix.date for mix in self.mixes],
+        }
+
     def __repr__(self):
         return f"<Song(id={self.id}, artist={self.artist}, name={self.name}, times_seen={len(self.mixes)})>"
 
@@ -136,10 +143,12 @@ def track_discover_weekly(
 def update_playlist(
     user: spotipy.Spotify, newDiscoverWeekly_id="10fTxvB9wxLtKuML78Z6CF"
 ):
+
     with Session() as session:
         mix = get_this_weeks_mix(session)
         new_songs = [song.id for song in mix.songs if len(song.mixes) == 1]
         user.playlist_replace_items(newDiscoverWeekly_id, new_songs)
+        logging.info("updated playlist")
 
 
 def remove_mix(date: datetime.date = datetime.date.today()):
