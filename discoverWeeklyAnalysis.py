@@ -1,7 +1,7 @@
 from discoverWeeklyTracker import Song, DiscoverWeekly, Session, association_table
 from playlistAnalysis import sp
 from tqdm import tqdm
-
+import numpy as np
 import sqlalchemy as sa
 
 from typing import List
@@ -9,7 +9,7 @@ from typing import List
 
 def getTracksInfo(tracks: List[Song]):
     tracks_info = []
-    n_iter = int(round(len(tracks) / 50))
+    n_iter = int(np.floor(len(tracks) / 50)) + 1
     for i_start, i_end in tqdm(
         [(i * 50, min((i + 1) * 50, len(tracks))) for i in range(n_iter)]
     ):
