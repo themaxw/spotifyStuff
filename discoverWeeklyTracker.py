@@ -4,10 +4,10 @@ from spotipy.oauth2 import SpotifyClientCredentials, SpotifyOAuth
 import toml
 import logging
 from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, Date, Float, Table, ForeignKey
-from sqlalchemy.orm import sessionmaker, relationship
+from sqlalchemy.orm import sessionmaker, relationship, declarative_base
 import datetime
+from spotipy_anon import SpotifyAnon
 
 basePath = Path(__file__).parent
 cachePath = basePath / ".cache"
@@ -97,11 +97,7 @@ def authenticate():
         )
     )
 
-    sp = spotipy.Spotify(
-        client_credentials_manager=SpotifyClientCredentials(
-            client_id=clientId, client_secret=clientSecret
-        )
-    )
+    sp = spotipy.Spotify(auth_manager=SpotifyAnon())
     return user, sp
 
 
@@ -204,6 +200,6 @@ if __name__ == "__main__":
 
     user, sp = authenticate()
     # TODO fix everything, implement check to only check once
-    track_discover_weekly(user)
+    track_discover_weekly(sp)
     update_playlist(user)
     # fixAllOfThisWeek(user)
